@@ -1,2 +1,0 @@
-
-    p_no lista;
