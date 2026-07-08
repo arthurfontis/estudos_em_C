@@ -3,6 +3,14 @@
  * Matricula: 252022430
  * Email: 252022430@aluno.unb.br
  *
+ * Problema: Fome no Minhocao
+ * Descricao: o mapa (grid N x M) e representado como um grafo, onde cada
+ * celula livre e um vertice e existe uma aresta entre duas celulas
+ * vizinhas (cima, baixo, esquerda, direita) sempre que nenhuma delas for
+ * obstaculo. O grafo e construido explicitamente como uma lista de
+ * adjacencia (um vetor de listas ligadas) e depois percorrido com busca
+ * em largura (BFS) para achar o caminho mais curto entre o aluno (A) e
+ * o RU (R).
  */
 
 #include <stdio.h>
@@ -15,9 +23,9 @@
  * ligada. Cada vertice guarda a lista de arestas que saem dele.
  *
  * destino: o vertice para onde a aresta aponta
- * movimento: a letra do movimento associado a essa aresta
+ * movimento: a letra (C, B, E ou D) do movimento associado a essa aresta
  * proxima: aponta para a proxima aresta na lista de adjacencia do
- * mesmo vertice
+ *          mesmo vertice
  */
 typedef struct Aresta {
     int destino;
@@ -49,7 +57,7 @@ int deltaColuna[4] = {0, 0, -1, 1};
 char letraDoMovimento[4] = {'C', 'B', 'E', 'D'};
 
 /*
- * Cria uma aresta do vertice origem para o vertice destino com o
+ * Cria uma aresta do vertice "origem" para o vertice "destino" com o
  * movimento associado, e insere essa aresta no inicio da lista de
  * adjacencia da origem.
  */
