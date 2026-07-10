@@ -1,45 +1,19 @@
-/*
- * Nome completo: Arthur Carvalho Fontinele
- * Matricula: 252022430
- * Email: 252022430@aluno.unb.br
- *
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MAX_VERTICES 1000000
 
-/*
- * Estrutura de uma aresta do grafo, representada como um no de lista
- * ligada. Cada vertice guarda a lista de arestas que saem dele.
- *
- * destino: o vertice para onde a aresta aponta
- * movimento: a letra do movimento associado a essa aresta
- * proxima: aponta para a proxima aresta na lista de adjacencia do
- * mesmo vertice
- */
 typedef struct Aresta {
     int destino;
     char movimento;
     struct Aresta *proxima;
 } Aresta;
 
-/* listaDeAdjacencia[v] guarda a lista ligada de arestas que saem do
- * vertice v (cada vertice e uma celula do mapa, identificada por um
- * indice unico calculado como linha * largura + coluna) */
 Aresta *listaDeAdjacencia[MAX_VERTICES];
-
-/* mapa guarda o grid original lido da entrada */
 char mapa[1000][1001];
-
-/* usadas pelo BFS: distancia minima ate cada vertice, de onde ele veio
- * e qual movimento foi usado para chegar nele */
 int distancia[MAX_VERTICES];
 int veioDe[MAX_VERTICES];
 char movimentoParaChegar[MAX_VERTICES];
-
-/* fila usada pelo BFS */
 int fila[MAX_VERTICES];
 
 int altura, largura;
@@ -48,11 +22,6 @@ int deltaLinha[4]  = {-1, 1, 0, 0};
 int deltaColuna[4] = {0, 0, -1, 1};
 char letraDoMovimento[4] = {'C', 'B', 'E', 'D'};
 
-/*
- * Cria uma aresta do vertice origem para o vertice destino com o
- * movimento associado, e insere essa aresta no inicio da lista de
- * adjacencia da origem.
- */
 void adicionarAresta(int origem, int destino, char movimento) {
     Aresta *nova = (Aresta *) malloc(sizeof(Aresta));
     nova->destino = destino;
@@ -61,20 +30,10 @@ void adicionarAresta(int origem, int destino, char movimento) {
     listaDeAdjacencia[origem] = nova;
 }
 
-/*
- * Converte uma posicao (linha, coluna) do mapa no indice do vertice
- * correspondente no grafo.
- */
 int indiceDoVertice(int linha, int coluna) {
     return linha * largura + coluna;
 }
 
-/*
- * Constroi o grafo a partir do mapa: para cada celula livre, cria uma
- * aresta para cada vizinho (cima, baixo, esquerda, direita) que tambem
- * seja uma celula livre. Isso transforma o grid num grafo explicito,
- * representado por lista de adjacencia.
- */
 void construirGrafo(void) {
     for (int linha = 0; linha < altura; linha++) {
         for (int coluna = 0; coluna < largura; coluna++) {
@@ -103,12 +62,6 @@ void construirGrafo(void) {
     }
 }
 
-/*
- * Busca em largura (BFS) a partir do vertice inicial. Percorre o grafo
- * ja construido (a lista de adjacencia), visitando primeiro os
- * vertices mais proximos, o que garante que a primeira vez que o
- * vertice final for alcancado, sera pelo caminho mais curto possivel.
- */
 void bfs(int verticeInicial, int verticeFinal, int totalDeVertices) {
     for (int i = 0; i < totalDeVertices; i++) {
         distancia[i] = -1;
@@ -128,8 +81,6 @@ void bfs(int verticeInicial, int verticeFinal, int totalDeVertices) {
             break;
         }
 
-        /* percorre a lista de adjacencia do vertice atual, ou seja,
-         * todas as arestas que saem dele */
         Aresta *aresta = listaDeAdjacencia[verticeAtual];
         while (aresta != NULL) {
             if (distancia[aresta->destino] == -1) {
@@ -165,14 +116,12 @@ int main(void) {
         }
     }
 
-    /* primeiro monta o grafo inteiro (vertices e arestas) */
     construirGrafo();
 
     int verticeInicial = indiceDoVertice(linhaAluno, colunaAluno);
     int verticeFinal = indiceDoVertice(linhaRU, colunaRU);
     int totalDeVertices = altura * largura;
 
-    /* so depois percorre o grafo ja pronto com BFS */
     bfs(verticeInicial, verticeFinal, totalDeVertices);
 
     if (distancia[verticeFinal] == -1) {
@@ -180,8 +129,6 @@ int main(void) {
         return 0;
     }
 
-    /* reconstroi o caminho de tras para frente, seguindo "veioDe" ate
-     * voltar no vertice inicial */
     int totalDePassos = distancia[verticeFinal];
     char caminho[1000001];
 
